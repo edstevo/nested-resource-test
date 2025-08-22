@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProductBrands\Resources\Products\Pages;
 
 use App\Filament\Resources\ProductBrands\Pages\CreateProductBrand;
+use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\User;
 use Livewire\Livewire;
@@ -11,18 +12,15 @@ test('creates product ok', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    $productBrand = ProductBrand::factory()->create();
+    $product = Product::factory()->create();
 
-    $this->assertDatabaseCount('products', 0);
-
-    Livewire::test(CreateProduct::class, [
-        'parentRecord' => $productBrand
+    Livewire::test(EditProduct::class, [
+        'parentRecord' => $product->productBrand,
+        'record' => $product->getKey(),
     ])
         ->assertOk()
         ->fillForm([
-            'name' => 'Test Brand'
+            'name' => 'New Name'
         ])
-        ->call('create');
-
-    $this->assertDatabaseCount('products', 1);
+        ->call('save');
 });
